@@ -63,7 +63,7 @@ public class FreeThrowApp extends Application {
 
     // Panier (objet Basket) placé juste à gauche du backboard.
     // Sa taille reste de 100 x 20.
-    private Basket basket = new Basket(1600, 350, 100, 20);
+    private Basket basket = new Basket(1580, 350, 120, 20);
 
     // Score et détection d'un lancer réussi
     private int score = 0;
