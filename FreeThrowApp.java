@@ -11,6 +11,10 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Time;
 
 public class FreeThrowApp extends Application {
 
@@ -54,6 +58,7 @@ public class FreeThrowApp extends Application {
 
     // Image du fond (court.jpg) présente dans le même dossier
     private Image courtImage;
+    private boolean soundPlaying = false;
 
     // Backboard (vertical) : rectangle fixe
     private static final double BACKBOARD_X = 1700;
@@ -137,9 +142,40 @@ public class FreeThrowApp extends Application {
                     resetBall();
                     resetGame();
                 }
+
+                // Si dernières 10 secondes jouer son
+                if (elapsedTime >= 50 && soundPlaying == false) {
+                    soundPlaying = true;
+                    playSound("timer.wav");
+                }
             }
         };
         timer.start();
+    }
+
+    // Jouer son pour 10 dernières secondes
+    public static void playSound(String filePath) {
+        try {
+            // Charger le fichier audio
+            File soundFile = new File(filePath);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+
+            // Créer un clip audio
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+
+            // Jouer le son
+            clip.start();
+
+            // Attendre que le son soit terminé
+            clip.addLineListener(event -> {
+                if (event.getType() == LineEvent.Type.STOP) {
+                    clip.close();
+                }
+            });
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
     }
 
     // Mise à jour de la position de la balle (uniquement en phase 2)
@@ -175,6 +211,12 @@ public class FreeThrowApp extends Application {
                 ballCenterY > basket.y && ballCenterY < basket.y + basket.height) {
                 score++;
                 scoredShot = true;
+                try {
+                    Thread.sleep(500);
+                    resetBall();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -284,6 +326,7 @@ public class FreeThrowApp extends Application {
         rebounds = 0;
         score = 0;
         startTime = System.currentTimeMillis();
+        soundPlaying = false;
     }
 
     // Réinitialisation des variables pour un nouveau lancer
