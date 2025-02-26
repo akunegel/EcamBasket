@@ -30,8 +30,8 @@ public class FreeThrowApp extends Application {
     private double rebounds = 0;
 
     // Valeurs de base choisies pour que, sans chargement, le lancer soit raté
-    private double velocityX = 5;      
-    private double velocityY = 0;     
+    private double velocityX = 44;      
+    private double velocityY = -21;     
     private final double gravity = 1;   // Accélération due à la gravité
 
     // Phases de réglage :
